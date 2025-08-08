@@ -182,10 +182,23 @@
     </div>
   </footer>
 
-<!-- Add Firestore SDK -->
+<!-- Firebase Core SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD20NR1jIBq_L3znffAe8c82VH49NcMmeE",
+    authDomain: "ezreview-ee8f0.firebaseapp.com",
+    projectId: "ezreview-ee8f0",
+    storageBucket: "ezreview-ee8f0.firebasestorage.app",
+    messagingSenderId: "985522835249",
+    appId: "1:985522835249:web:fda8bab4bac91fb898ea10",
+    measurementId: "G-RBB28JDVJW"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
   const db = firebase.firestore();
 
   function loginWithUsername(event) {
@@ -201,7 +214,6 @@
         }
         const userData = doc.data();
         if (userData.password === password) {
-          // Optional: store session or name
           localStorage.setItem("username", username);
           localStorage.setItem("fullname", userData.fullname || "");
           window.location.href = "dashboard.html";
@@ -211,10 +223,7 @@
       })
       .catch((error) => {
         console.error("Login error:", error);
-        alert("Error logging in");
-      });
-  }
-</script>
+        alert("Error logging i
 
   </script>
 </body>
