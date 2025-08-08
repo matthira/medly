@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedlyOne Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Onest', sans-serif;
+      background-color: #f4f8fc;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: white;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    header img {
+      height: 100px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2rem;
+      padding: 3rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .tile {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+      text-decoration: none;
+      color: black;
+    }
+    .tile:hover {
+      transform: translateY(-5px);
+    }
+    .tile img {
+      height: 48px;
+      margin-bottom: 1rem;
+    }
+    .tile p {
+      margin: 0;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="medlylogo.png" alt="MedlyOne Logo">
+  </header>
+
+  <section class="dashboard">
+    <a href="https://www.ezreviews.app" class="tile" target="_blank">
+      <img src="review.png" alt="Easy Review Icon">
+      <p>Easy Review</p>
+    </a>
+    <a href="#" class="tile">
+      <img src="https://img.icons8.com/ios-filled/50/calendar.png" alt="Scheduler Icon">
+      <p>Configure Clinic Scheduler</p>
+    </a>
+    <a href="#" class="tile">
+      <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="iOS App Icon">
+      <p>Configure iOS Experience</p>
+    </a>
+    <a href="#" class="tile">
+      <img src="https://img.icons8.com/ios-filled/50/artificial-intelligence.png" alt="AI Client Icon">
+      <p>Configure AI Client</p>
+    </a>
+    <a href="#" class="tile">
+      <img src="https://img.icons8.com/ios-filled/50/chat.png" alt="Messages Icon">
+      <p>Patient Messages</p>
+    </a>
+    <a href="#" class="tile">
+      <img src="https://img.icons8.com/ios-filled/50/combo-chart--v1.png" alt="Analytics Icon">
+      <p>Analytics</p>
+    </a>
+  </section>
+</body>
+</html>
