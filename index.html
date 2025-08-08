@@ -198,7 +198,6 @@
   };
 
   firebase.initializeApp(firebaseConfig);
-
   const db = firebase.firestore();
 
   function loginWithUsername(event) {
@@ -223,8 +222,9 @@
       })
       .catch((error) => {
         console.error("Login error:", error);
-        alert("Error logging i
-
-  </script>
+        alert("Error logging in");
+      });
+  }
+</script>
 </body>
 </html>
