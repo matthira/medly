@@ -21,14 +21,29 @@
     header img {
       height: 100px;
     }
-    .dashboard {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 2rem;
-      padding: 3rem;
-      max-width: 1000px;
-      margin: auto;
-    }
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+  gap: 2rem;
+  padding: 3rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    grid-template-columns: 1fr; /* 1 column on mobile */
+  }
+}
+
+
+    
     .tile {
       background: white;
       border-radius: 1rem;
