@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedlyOne - The Premium Experience</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fbfc;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+    header {
+      background: #ffffff;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    header img {
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    header p {
+      font-size: 1rem;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+    }
+    .feature {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    }
+    .feature img {
+      height: 80px;
+      margin-bottom: 1rem;
+    }
+    .feature h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+    footer {
+      background: #f0f4f8;
+      padding: 2rem;
+      text-align: center;
+    }
+    footer a img {
+      height: 40px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease-in-out;
+    }
+    footer a:hover img {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="medlylogo.png" alt="MedlyOne Logo" />
+    <h1>MedlyOne - The Premium Experience</h1>
+    <p>Suite of applications and technology to enable practices to deliver the premium patient experience</p>
+  </header>
+
+  <section class="features">
+    <div class="feature">
+      <img src="scheduler.png" alt="Scheduler Icon" />
+      <h3>Online Scheduler</h3>
+      <p>Online Scheduler and Questionnaire for convenient and integrated patient scheduling.</p>
+    </div>
+    <div class="feature">
+      <img src="app.png" alt="iOS App Icon" />
+      <h3>Custom iOS App</h3>
+      <p>iOS app customized to your clinic to provide patients with drop reminders, tools, and targeted educational materials.</p>
+    </div>
+    <div class="feature">
+      <img src="ai.png" alt="AI Client Icon" />
+      <h3>AI Assistants</h3>
+      <p>AI-driven clients to help answer patient questions about procedures and options.</p>
+    </div>
+    <div class="feature">
+      <img src="review.png" alt="Review App Icon" />
+      <h3>Easy Review</h3>
+      <p>Easy Review app to close the loop and collect precious patient feedback.</p>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://biminiai.com/" target="_blank">
+      <img src="biminilogo.png" alt="Bimini AI Logo" />
+    </a>
+  </footer>
+</body>
+</html>
