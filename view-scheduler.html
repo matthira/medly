@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Schedule</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f8fc;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Configure Daily Schedule</h1>
+  <div class="form-container">
+    <div class="form-group">
+      <label for="appointmentType">Appointment Type</label>
+      <select id="appointmentType">
+        <option value="VCC">Vision Correction Evaluation (VCC)</option>
+        <option value="CE">Cataract Evaluation (CE)</option>
+        <option value="PO">Post-Op (PO)</option>
+        <option value="SPE">Surgical Planning Evaluation (SPE)</option>
+        <option value="FU">Follow-Up (FU)</option>
+        <option value="CE/IOL">Cataract Surgery (CE/IOL)</option>
+        <option value="ICL">ICL Surgery (ICL)</option>
+        <option value="LASIK">LASIK</option>
+        <option value="PRK">PRK</option>
+        <option value="SMILE">SMILE</option>
+        <option value="SK">Superficial Keratectomy (SK)</option>
+        <option value="Custom">Custom</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="customType">Custom Appointment Name (optional)</label>
+      <input type="text" id="customType" placeholder="Enter custom appointment name if selected above">
+    </div>
+
+    <div class="form-group">
+      <label for="duration">Duration (minutes)</label>
+      <input type="number" id="duration" placeholder="30">
+    </div>
+
+    <div class="form-group">
+      <label for="startTime">Start Time</label>
+      <input type="time" id="startTime">
+    </div>
+
+    <div class="form-group">
+      <label for="endTime">End Time</label>
+      <input type="time" id="endTime">
+    </div>
+
+    <button onclick="saveScheduleTemplate()">Save Schedule Template</button>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    function saveScheduleTemplate() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please log in first.");
+        return;
+      }
+
+      const appointmentType = document.getElementById('appointmentType').value;
+      const customType = document.getElementById('customType').value;
+      const duration = document.getElementById('duration').value;
+      const startTime = document.getElementById('startTime').value;
+      const endTime = document.getElementById('endTime').value;
+
+      const schedule = {
+        type: appointmentType === 'Custom' ? customType : appointmentType,
+        duration: parseInt(duration),
+        startTime,
+        endTime,
+        createdAt: new Date()
+      };
+
+      db.collection("users").doc(user.uid).collection("scheduleTemplates").add(schedule)
+        .then(() => alert("Schedule saved."))
+        .catch(err => alert("Error saving schedule: " + err.message));
+    }
+  </script>
+</body>
+</html>
