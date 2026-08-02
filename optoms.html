@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optometrist Finder · MedlyOne</title>
+  <meta name="description" content="Search the national NPI registry for optometrists by ZIP, city, or name." />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --teal: #2dd4bf; --teal-d: #14b8a6; --bg: #04110d; --card: #0c1c17; --line: #16302880; --muted: #8aa39b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Onest', sans-serif; background: var(--bg); color: #eafaf5; min-height: 100vh; }
+    a { color: var(--teal); text-decoration: none; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.6rem; border-bottom: 1px solid var(--line); }
+    .brand { font-weight: 700; font-size: 1.15rem; }
+    .brand span { color: var(--teal); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 2rem 1.4rem 4rem; }
+    h1 { font-size: 2rem; margin: .2rem 0; }
+    .sub { color: var(--muted); margin-bottom: 1.6rem; }
+    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .7rem; align-items: end;
+      background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 1.1rem; }
+    label { display: block; font-size: .74rem; color: var(--muted); margin-bottom: .3rem; }
+    input, select { width: 100%; padding: .55rem .6rem; border-radius: .55rem; border: 1px solid #1f3a32;
+      background: #06150f; color: #eafaf5; font-size: .9rem; font-family: inherit; }
+    input:focus, select:focus { outline: none; border-color: var(--teal-d); }
+    button { font-family: inherit; cursor: pointer; }
+    .btn { padding: .6rem 1.1rem; background: var(--teal); color: #04110d; border: none; border-radius: .55rem; font-weight: 700; font-size: .9rem; }
+    .btn:disabled { opacity: .6; cursor: default; }
+    .btn-ghost { background: transparent; color: var(--teal); border: 1px solid var(--teal-d); }
+    .summary { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin: 1.4rem 0 .6rem; color: var(--muted); font-size: .9rem; }
+    .summary strong { color: var(--teal); }
+    .tablewrap { overflow: auto; max-height: 62vh; border: 1px solid var(--line); border-radius: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { position: sticky; top: 0; background: #0a1a15; color: var(--muted); font-weight: 600; }
+    td.name { white-space: normal; }
+    .npi { font-family: ui-monospace, monospace; color: var(--muted); font-size: .8rem; }
+    .org { color: #b794f6; }
+    .inactive { color: #f87171; font-weight: 600; font-size: .78rem; }
+    .msg { padding: 1rem; color: var(--muted); }
+    .err { background: #3b1414; color: #fca5a5; padding: .8rem 1rem; border-radius: .6rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Medly<span>One</span></div>
+    <a href="https://www.medly.one/">← Home</a>
+  </header>
+  <div class="wrap">
+    <h1>Optometrist Finder</h1>
+    <div class="sub">Search the national NPI registry by ZIP, city, or name — scope any market in seconds.</div>
+
+    <form id="f">
+      <div><label>ZIP (comma-separated)</label><input id="zip" placeholder="78701, 78702" /></div>
+      <div><label>City</label><input id="city" placeholder="Austin" /></div>
+      <div><label>State</label><input id="state" value="TX" maxlength="2" /></div>
+      <div><label>Last name</label><input id="last_name" placeholder="optional" /></div>
+      <div><label>Taxonomy</label><select id="taxonomy">
+        <option value="Optometrist">Optometrist</option>
+        <option value="Ophthalmology">Ophthalmology</option>
+        <option value="any">Any provider</option>
+      </select></div>
+      <div><label>Type</label><select id="type">
+        <option value="NPI-1">Individuals</option>
+        <option value="NPI-2">Practices/orgs</option>
+        <option value="">Both</option>
+      </select></div>
+      <button class="btn" id="go" type="submit">Search</button>
+    </form>
+
+    <div id="out"></div>
+  </div>
+
+  <script>
+    // Public NPPES proxy on the MedlyOne backend (NPPES itself has no CORS).
+    const API = 'https://pnvgpt.onrender.com/api/public/npi/search';
+    const $ = id => document.getElementById(id);
+    let last = [];
+
+    $('f').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const out = $('out'); const go = $('go');
+      const q = { zip: $('zip').value, city: $('city').value, state: $('state').value,
+        last_name: $('last_name').value, taxonomy: $('taxonomy').value, type: $('type').value };
+      const params = new URLSearchParams();
+      Object.entries(q).forEach(([k, v]) => { if (v && String(v).trim()) params.set(k, String(v).trim()); });
+      if (![...params.keys()].some(k => ['zip', 'city', 'last_name'].includes(k))) {
+        out.innerHTML = '<div class="err">Enter a ZIP, city, or last name.</div>'; return;
+      }
+      go.disabled = true; go.textContent = 'Searching…'; out.innerHTML = '<div class="msg">Searching NPPES…</div>';
+      try {
+        const res = await fetch(API + '?' + params.toString());
+        const j = await res.json();
+        if (j.error) throw new Error(j.error);
+        last = j.results || [];
+        render(j);
+      } catch (err) {
+        out.innerHTML = '<div class="err">' + (err.message || 'Search failed') + '</div>';
+      } finally { go.disabled = false; go.textContent = 'Search'; }
+    });
+
+    function render(j) {
+      if (!j.results.length) { $('out').innerHTML = '<div class="msg">No results. Try a ZIP or last name.</div>'; return; }
+      const rows = j.results.map(r => `<tr>
+        <td class="name">${esc(r.name)}${r.credential ? ', ' + esc(r.credential) : ''} ${r.active ? '' : '<span class="inactive">(inactive)</span>'}</td>
+        <td class="${r.type === 'NPI-2' ? 'org' : ''}">${esc(r.org_name || (r.type === 'NPI-2' ? r.name : '—'))}</td>
+        <td>${esc(r.taxonomy || '')}${r.license ? ' · #' + esc(r.license) : ''}</td>
+        <td>${esc([r.address, r.city, r.state, r.zip].filter(Boolean).join(', '))}</td>
+        <td>${esc(r.phone || '—')}</td>
+        <td class="npi">${esc(r.npi)}</td></tr>`).join('');
+      $('out').innerHTML = `
+        <div class="summary">
+          <span><strong>${j.count}</strong> results</span>
+          <span>${j.individuals} individuals · ${j.organizations} orgs</span>
+          <span style="margin-left:auto"><button class="btn btn-ghost" onclick="exportCsv()">Export CSV</button></span>
+        </div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Name</th><th>Practice</th><th>Taxonomy</th><th>Address</th><th>Phone</th><th>NPI</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>`;
+    }
+
+    function exportCsv() {
+      if (!last.length) return;
+      const cols = ['npi', 'type', 'name', 'org_name', 'credential', 'taxonomy', 'license', 'address', 'city', 'state', 'zip', 'phone', 'active'];
+      const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const csv = [cols.join(',')].concat(last.map(r => cols.map(c => q(r[c])).join(','))).join('\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+      a.download = 'optoms.csv'; a.click();
+    }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  </script>
+</body>
+</html>
